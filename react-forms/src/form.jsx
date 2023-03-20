@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import './form.css'
 
 const Form = () => {
@@ -17,6 +17,8 @@ const Form = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const currentErrors = validate();
+    setErrors(currentErrors);
+
     if (currentErrors.length) {
       console.log('ERRORS!');
     } else {
@@ -33,21 +35,35 @@ const Form = () => {
       });
     } 
   };
+
+  function isEmail(emailAdress){
+    let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+  if (emailAdress.match(regex)) 
+    return true; 
+
+   else 
+    return false; 
+}
   const validate = () => {
+    
     const currentErrors = [];
     if (user.firstName.length === 0) currentErrors.push('First Name is missing')
     if (user.lastName.length === 0) currentErrors.push('Last Name is missing')
-    if (user.phoneNumber.length > 0 && user.phoneType.value === '') currentErrors.push('Phone type must be selected')
+    if (user.phoneNumber.length > 0 && user.phoneType === '') currentErrors.push('Phone type must be selected')
     if (user.bio.length > 280) currentErrors.push('Bio should have a character limit of 280 characters')
+    if (!isEmail(user.email)) currentErrors.push('Invalid email address')
     return currentErrors;
-    debugger
   };
+
+
+
+
   
   return(
     <>
       <ul>
-        {errors.map((error,i) => <li key={i}>{error}</li>)}
-    console.log(user.phoneType);
+        {errors.map((error, i) => <li key={i}>{error}</li>)}
       </ul>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="First Name" value={user.firstName} onChange={handleChange('firstName')}/>
